@@ -1,0 +1,32 @@
+name: Update Sonar Version and Build
+
+on:
+  push:
+    branches:
+      - master
+  workflow_run:
+    workflows: ["Update Sonar Version and Build"]
+    types:
+      - completed
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v2
+
+    - name: Print Hello World
+      run: echo "Hello, World!"
+
+    - name: Update Sonar Version
+      run: |
+        gradle updateSonarVersion
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git commit -a -m "Update Sonar Version"
+        git push origin HEAD:${{ github.base_ref }}
+
+    - name: Print Success Message
+      run: echo "Build Successful!"
